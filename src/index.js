@@ -37,7 +37,7 @@ export const deepCopy = (obj) => {
   Object.entries(obj).forEach(([key, value]) => {
     if (value instanceof Object) {
       copy[key] = deepCopy(value);
-    }
+    } else
     copy[key] = value;
   });
   return copy;
