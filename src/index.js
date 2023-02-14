@@ -3,7 +3,26 @@
  * true, если есть различие, false. То есть проверяет каждое свойство, вне зависимости от вложенности,
  * делаем через рекурсию(а других вариантов и нет)
  */
-export const deepEqual = (obj, anotherObject) => {};
+export const deepEqual = (obj, anotherObject) => {
+  let status;
+
+  for (let key in obj) {
+    if (!anotherObject.hasOwnProperty(key) || Object.keys(obj).length !== Object.keys(anotherObject).length) {
+      status = false;
+      break;
+    } else if ((obj[key] instanceof Object) && (anotherObject[key] instanceof Object)) {
+      status = deepEqual(obj[key], anotherObject[key]);
+      if (status === false) break;
+    } else if (obj[key] === anotherObject[key]) {
+      status = true;
+    } else {
+      status = false;
+      break;
+    }
+  }
+
+  return status;
+};
 
 /**
  * Принимает объект, возвращает его глубокую копию, то есть ни одно свойство
@@ -12,10 +31,30 @@ export const deepEqual = (obj, anotherObject) => {};
  * то тогда в рекурсию. С объектом также. Поскольку массив при typeof возвращает object, чтобы
  * их различить берем метод Array.isArray и он на массивах вернет тру
  */
-export const deepCopy = (obj) => {};
+export const deepCopy = (obj) => {
+  const copy = {};
+
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value instanceof Object) {
+      copy[key] = deepCopy(value);
+    }
+    copy[key] = value;
+  });
+  return copy;
+};
 
 /**
  * Мы передаем объект, и должны вернуть массив уникальных названий свойств
  * То есть если у нас объект { name: { bohdan: { name: 'test' } } } вернет ['name', 'bohdan']
  */
-export const getAllObjectKeys = (obj) => {};
+export const getAllObjectKeys = (obj) => {
+
+  let result = [];
+  Object.entries(obj).forEach(([key, value]) => {
+    if (result && !result.includes(key)) result.push(key);
+    if (value instanceof Object) {
+      return result = [...new Set([...result, ...getAllObjectKeys(value)])];
+    } else return result;
+  });
+  return result;
+};
