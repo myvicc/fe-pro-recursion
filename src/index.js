@@ -32,15 +32,14 @@ export const deepEqual = (obj, anotherObject) => {
  * их различить берем метод Array.isArray и он на массивах вернет тру
  */
 export const deepCopy = (obj) => {
-  const copy = {};
-
-  Object.entries(obj).forEach(([key, value]) => {
+  return Object.entries(obj).reduce((copy,[key, value]) => {
     if (value instanceof Object) {
       copy[key] = deepCopy(value);
-    } else
+      return copy;
+    }
     copy[key] = value;
-  });
-  return copy;
+    return copy;
+  }, {});
 };
 
 /**
